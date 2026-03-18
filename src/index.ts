@@ -1,18 +1,15 @@
-import { Command } from 'commander';
-
+import { Command } from "commander";
+import { createVolumeCommand } from "./commands/volume";
 
 const program = new Command();
 
 program
-  .name('macctl')
-  .description('CLI for controlling macOS')
-  .version('1.0.0');
+	.name("macctl")
+	.description("CLI for controlling macOS")
+	.version("1.0.0")
+	.showHelpAfterError()
+	.showSuggestionAfterError();
 
-program
-    .command('hello')
-    .description('Test command')
-    .action(() => {
-        console.log('Hi there!')
-    });
+program.addCommand(createVolumeCommand());
 
 program.parse();
