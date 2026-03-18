@@ -1,6 +1,23 @@
 import { Command } from "commander";
 import { printResult } from "../lib/result";
-import { ensureVolume } from "../lib/validate";
+import {
+	decreaseVolume,
+	getVolumeState,
+	increaseVolume,
+	setMute,
+	setVolume,
+	toggleMute,
+} from "../lib/volume";
+
+function ensurePercent(value: number, field = "value"): number {
+	if (!Number.isFinite(value)) {
+		throw new Error(`${field} must be a number.`);
+	}
+	if (value < 0 || value > 100) {
+		throw new Error(`${field} must be between 0 and 100.`);
+	}
+	return value;
+}
 
 export function createVolumeCommand() {
 	const volume = new Command("volume").description(
@@ -11,10 +28,15 @@ export function createVolumeCommand() {
 		.command("get")
 		.description("Get current output volume")
 		.action(() => {
+			const state = getVolumeState();
+
 			printResult({
 				status: "success",
 				action: "volume.get",
-				message: "Not implemented yet",
+				message: state.outputMuted
+					? `Volume is ${state.outputVolume} (muted)`
+					: `Volume is ${state.outputVolume}`,
+				data: state,
 			});
 		});
 
@@ -23,13 +45,14 @@ export function createVolumeCommand() {
 		.description("Set output volume (0-100)")
 		.argument("<value>", "volume percentage", (value) => Number(value))
 		.action((value: number) => {
-			ensureVolume(value);
+			ensurePercent(value);
+			const state = setVolume(value);
 
 			printResult({
 				status: "success",
 				action: "volume.set",
-				message: `Requested volume ${value}`,
-				data: { value },
+				message: `Volume set to ${state.outputVolume}`,
+				data: state,
 			});
 		});
 
@@ -38,13 +61,14 @@ export function createVolumeCommand() {
 		.description("Increase output volume")
 		.argument("[amount]", "amount to increase", (value) => Number(value), 5)
 		.action((amount: number) => {
-			ensureVolume(amount);
+			ensurePercent(amount, "amount");
+			const state = increaseVolume(amount);
 
 			printResult({
 				status: "success",
 				action: "volume.up",
-				message: `Requested volume increase by ${amount}`,
-				data: { amount },
+				message: `Volume increased to ${state.outputVolume}`,
+				data: state,
 			});
 		});
 
@@ -53,13 +77,39 @@ export function createVolumeCommand() {
 		.description("Decrease output volume")
 		.argument("[amount]", "amount to decrease", (value) => Number(value), 5)
 		.action((amount: number) => {
-			ensureVolume(amount);
+			ensurePercent(amount, "amount");
+			const state = decreaseVolume(amount);
 
 			printResult({
 				status: "success",
 				action: "volume.down",
-				message: `Requested volume decrease by ${amount}`,
-				data: { amount },
+				message: `Volume decreased to ${state.outputVolume}`,
+				data: state,
+			});
+		});
+
+	volume
+		.command("mute")
+		.description("Mute controls")
+		.argument("<state>", "on | off | toggle")
+		.action((state: string) => {
+			let result;
+
+			if (state === "on") {
+				result = setMute(true);
+			} else if (state === "off") {
+				result = setMute(false);
+			} else if (state === "toggle") {
+				result = toggleMute();
+			} else {
+				throw new Error("State must be one of: on, off, toggle");
+			}
+
+			printResult({
+				status: "success",
+				action: "volume.mute",
+				message: result.outputMuted ? "Volume muted" : "Volume unmuted",
+				data: result,
 			});
 		});
 
