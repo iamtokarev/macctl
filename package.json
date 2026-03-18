@@ -1,0 +1,23 @@
+{
+  "name": "macctl",
+  "module": "src/index.ts",
+  "type": "module",
+  "bin": {
+    "macctl": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "bun build ./src/index.ts --target bun --outdir ./dist",
+    "start": "bun run ./dist/index.js"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "commander": "^14.0.3"
+  }
+}
