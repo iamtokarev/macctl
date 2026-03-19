@@ -1,3 +1,5 @@
+#!/usr/bin/env bun
+
 import { Command } from "commander";
 import { createVolumeCommand } from "./commands/volume";
 import { createScreenCommand } from "./commands/screen";
