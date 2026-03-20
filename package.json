@@ -1,10 +1,15 @@
 {
 	"name": "macctl",
+	"version": "0.1.0",
+	"description": "macOS CLI for controlling system settings (volume, screen, etc.) via AppleScript",
 	"module": "src/index.ts",
 	"type": "module",
 	"bin": {
-		"macctl": "./src/index.ts"
+		"macctl": "./dist/index.js"
 	},
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"dev": "bun run src/index.ts",
 		"build": "bun build ./src/index.ts --target bun --outdir ./dist",
@@ -12,9 +17,10 @@
 		"lint": "biome lint src package.json tsconfig.json",
 		"format": "biome format --write src package.json tsconfig.json",
 		"check": "biome check src package.json tsconfig.json",
-		"check:fix": "biome check --write src package.json tsconfig.json"
+		"check:fix": "biome check --write src package.json tsconfig.json",
+		"prepublishOnly": "bun run build"
 	},
-	"private": true,
+	"license": "MIT",
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.8",
 		"@types/bun": "latest"
