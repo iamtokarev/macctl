@@ -6,28 +6,38 @@ A small [Bun](https://bun.com) CLI for controlling a Mac from the terminal. Comm
 
 ## Requirements
 
-- macOS  
+- macOS
 - [Bun](https://bun.com) installed
 
-## Setup
+## Installation
 
 ```bash
+npm install -g macctl
+# or
+bun install -g macctl
+```
+
+## Development
+
+Clone and install:
+
+```bash
+git clone https://github.com/serverdaun/macctl.git
+cd macctl
 bun install
 ```
 
-Run from source during development:
+Run from source:
 
 ```bash
 bun run dev -- --help
 ```
 
-To use the `macctl` command globally from this directory:
+Install globally from source:
 
 ```bash
 bun link
 ```
-
-(Or run `bun run src/index.ts` / `bun run dev` with arguments as below.)
 
 ## Commands
 
@@ -52,14 +62,19 @@ bun link
 Successful runs emit JSON with `status`, `action`, `message`, and optional `data`. Example:
 
 ```bash
-bun run dev volume get
+macctl volume get
 ```
 
-## Development
+```json
+{ "status": "success", "action": "volume.get", "message": "Volume is 42", "data": { "outputVolume": 42, "outputMuted": false } }
+```
+
+## Dev scripts
 
 ```bash
-bun run build    # bundle to dist/
-bun run start    # run built CLI
-bun run check    # format + lint (Biome)
+bun run build      # bundle to dist/
+bun run start      # run built CLI
+bun run check      # format + lint (Biome)
+bun run check:fix  # auto-fix lint/format issues
 ```
 
