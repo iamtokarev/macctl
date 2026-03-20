@@ -7,6 +7,7 @@ import {
 	setMute,
 	setVolume,
 	toggleMute,
+	type VolumeState,
 } from "../lib/volume";
 
 function ensurePercent(value: number, field = "value"): number {
@@ -93,7 +94,7 @@ export function createVolumeCommand() {
 		.description("Mute controls")
 		.argument("<state>", "on | off | toggle")
 		.action((state: string) => {
-			let result;
+			let result: VolumeState;
 
 			if (state === "on") {
 				result = setMute(true);
