@@ -1,5 +1,8 @@
 # macctl
 
+[![CI](https://github.com/serverdaun/macctl/actions/workflows/ci.yml/badge.svg)](https://github.com/serverdaun/macctl/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/macctl)](https://www.npmjs.com/package/macctl)
+
 A small [Bun](https://bun.com) CLI for controlling a Mac from the terminal. Commands print **structured JSON** so scripts and tools can parse results reliably.
 
 **Agents and voice workflows:** This is a good fit for **locally running agents** (or voice assistants in “tool use” mode) that need safe, explicit control of a MacBook—e.g. adjusting volume or locking the screen—without opening full GUI automation for every action.
