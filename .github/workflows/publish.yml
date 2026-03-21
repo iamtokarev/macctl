@@ -15,8 +15,23 @@ jobs:
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
-      - run: bun install
+      - run: bun install --frozen-lockfile
+      - run: |
+          if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid tag format: $GITHUB_REF_NAME"
+            exit 1
+          fi
+          PACKAGE_VERSION="$(bun -e 'const pkg = await Bun.file("package.json").json(); console.log(pkg.version)')"
+          if [ "$GITHUB_REF_NAME" != "v$PACKAGE_VERSION" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version v$PACKAGE_VERSION"
+            exit 1
+          fi
+      - run: bun run check
       - run: bun run build
+      - run: |
+          PACKAGE_VERSION="$(bun -e 'const pkg = await Bun.file("package.json").json(); console.log(pkg.version)')"
+          CLI_VERSION="$(bun run ./dist/index.js --version)"
+          test "$CLI_VERSION" = "$PACKAGE_VERSION"
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

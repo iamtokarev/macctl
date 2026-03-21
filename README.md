@@ -89,5 +89,14 @@ bun run build      # bundle to dist/
 bun run start      # run built CLI
 bun run check      # format + lint (Biome)
 bun run check:fix  # auto-fix lint/format issues
+bun run release:patch  # bump patch version, validate, commit, and tag
 ```
 
+## Releasing
+
+Create a patch release from a clean `main` branch:
+
+```bash
+bun run release:patch
+git push origin main --follow-tags
+```

@@ -7,10 +7,15 @@ on:
     branches: [main]
 
 jobs:
-  lint:
+  validate:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - run: bun install
+      - run: bun install --frozen-lockfile
       - run: bun run check
+      - run: bun run build
+      - run: |
+          PACKAGE_VERSION="$(bun -e 'const pkg = await Bun.file("package.json").json(); console.log(pkg.version)')"
+          CLI_VERSION="$(bun run ./dist/index.js --version)"
+          test "$CLI_VERSION" = "$PACKAGE_VERSION"
