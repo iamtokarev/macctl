@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
 import { Command } from "commander";
+import { createAppCommand } from "./commands/app";
 import { createScreenCommand } from "./commands/screen";
 import { createVolumeCommand } from "./commands/volume";
 
@@ -15,5 +16,6 @@ program
 
 program.addCommand(createVolumeCommand());
 program.addCommand(createScreenCommand());
+program.addCommand(createAppCommand());
 
 program.parse();

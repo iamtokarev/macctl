@@ -60,6 +60,16 @@ bun link
 |--------|-------------|
 | `macctl screen lock` | Lock the screen |
 
+### App
+
+| Command | Description |
+|--------|-------------|
+| `macctl app open <name>` | Open an application |
+| `macctl app focus <name>` | Bring an application to the foreground |
+| `macctl app quit <name>` | Quit an application gracefully |
+| `macctl app running <name>` | Check whether an application is running |
+| `macctl app list` | List visible running applications |
+
 ## Output
 
 Successful runs emit JSON with `status`, `action`, `message`, and optional `data`. Example:
