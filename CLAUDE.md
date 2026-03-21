@@ -38,6 +38,7 @@ src/
 1. Add logic to a new `src/lib/<feature>.ts` — use `runAppleScript()` for system control
 2. Create `src/commands/<feature>.ts` — define Commander subcommands, call lib, call `printResult()`
 3. Register in `src/index.ts` with `program.addCommand(create<Feature>Command())`
+4. Update list of commands in `README.md`
 
 **Key conventions:**
 - All output is JSON via `printResult()` — never use `console.log` directly in commands
