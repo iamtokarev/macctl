@@ -1,4 +1,4 @@
-import { Command } from "commander";
+import { Argument, Command } from "commander";
 import { printResult } from "../lib/result";
 import {
 	decreaseVolume,
@@ -21,13 +21,31 @@ function ensurePercent(value: number, field = "value"): number {
 }
 
 export function createVolumeCommand() {
-	const volume = new Command("volume").description(
-		"Control system output volume",
-	);
+	const volume = new Command("volume")
+		.description(
+			[
+				"Control system OUTPUT volume (speakers/headphones, not microphone).",
+				"All levels are integer percentages in the range 0-100.",
+				"Every subcommand returns data: { outputVolume: 0-100, outputMuted: boolean }.",
+			].join("\n"),
+		)
+		.addHelpText(
+			"after",
+			[
+				"",
+				"Examples:",
+				"  $ macctl volume get",
+				"  $ macctl volume set 50",
+				"  $ macctl volume up 10",
+				"  $ macctl volume mute on",
+			].join("\n"),
+		);
 
 	volume
 		.command("get")
-		.description("Get current output volume")
+		.description(
+			"Read current output volume and mute state. data: { outputVolume: 0-100, outputMuted: boolean }",
+		)
 		.action(() => {
 			const state = getVolumeState();
 
@@ -43,8 +61,14 @@ export function createVolumeCommand() {
 
 	volume
 		.command("set")
-		.description("Set output volume (0-100)")
-		.argument("<value>", "volume percentage", (value) => Number(value))
+		.description(
+			"Set absolute output volume. Idempotent — same value twice yields the same state.",
+		)
+		.argument(
+			"<value>",
+			"integer percentage, 0-100 (0 = silent, 100 = max)",
+			(value) => Number(value),
+		)
 		.action((value: number) => {
 			ensurePercent(value);
 			const state = setVolume(value);
@@ -59,8 +83,15 @@ export function createVolumeCommand() {
 
 	volume
 		.command("up")
-		.description("Increase output volume")
-		.argument("[amount]", "amount to increase", (value) => Number(value), 5)
+		.description(
+			"Increase output volume by a relative amount. Clamped to a maximum of 100.",
+		)
+		.argument(
+			"[amount]",
+			"integer percentage to add, 0-100 (default 5)",
+			(value) => Number(value),
+			5,
+		)
 		.action((amount: number) => {
 			ensurePercent(amount, "amount");
 			const state = increaseVolume(amount);
@@ -75,8 +106,15 @@ export function createVolumeCommand() {
 
 	volume
 		.command("down")
-		.description("Decrease output volume")
-		.argument("[amount]", "amount to decrease", (value) => Number(value), 5)
+		.description(
+			"Decrease output volume by a relative amount. Clamped to a minimum of 0.",
+		)
+		.argument(
+			"[amount]",
+			"integer percentage to subtract, 0-100 (default 5)",
+			(value) => Number(value),
+			5,
+		)
 		.action((amount: number) => {
 			ensurePercent(amount, "amount");
 			const state = decreaseVolume(amount);
@@ -91,8 +129,16 @@ export function createVolumeCommand() {
 
 	volume
 		.command("mute")
-		.description("Mute controls")
-		.argument("<state>", "on | off | toggle")
+		.description(
+			"Set or toggle output mute. Prefer 'on' or 'off' for deterministic results; 'toggle' flips the current state.",
+		)
+		.addArgument(
+			new Argument("<state>", "desired mute state").choices([
+				"on",
+				"off",
+				"toggle",
+			]),
+		)
 		.action((state: string) => {
 			let result: VolumeState;
 
