@@ -5,14 +5,14 @@
 	"module": "src/index.ts",
 	"type": "module",
 	"bin": {
-		"macctl": "./dist/index.js"
+		"macctl": "dist/index.js"
 	},
 	"files": [
 		"dist"
 	],
 	"scripts": {
 		"dev": "bun run src/index.ts",
-		"build": "bun build ./src/index.ts --target bun --outdir ./dist",
+		"build": "bun build ./src/index.ts --target node --outdir ./dist",
 		"start": "bun run ./dist/index.js",
 		"lint": "biome lint src scripts package.json tsconfig.json",
 		"format": "biome format --write src scripts package.json tsconfig.json",

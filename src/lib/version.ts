@@ -1,16 +1,17 @@
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
 type PackageJson = {
 	version?: unknown;
 };
 
-async function findPackageJson(startDir: string): Promise<string> {
+function findPackageJson(startDir: string): string {
 	let currentDir = startDir;
 
 	while (true) {
 		const candidate = resolve(currentDir, "package.json");
 
-		if (await Bun.file(candidate).exists()) {
+		if (existsSync(candidate)) {
 			return candidate;
 		}
 
@@ -25,8 +26,10 @@ async function findPackageJson(startDir: string): Promise<string> {
 }
 
 export async function getPackageVersion(): Promise<string> {
-	const packageJsonPath = await findPackageJson(import.meta.dir);
-	const packageJson = (await Bun.file(packageJsonPath).json()) as PackageJson;
+	const packageJsonPath = findPackageJson(import.meta.dirname);
+	const packageJson = JSON.parse(
+		readFileSync(packageJsonPath, "utf8"),
+	) as PackageJson;
 
 	if (
 		typeof packageJson.version !== "string" ||
