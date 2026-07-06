@@ -1,6 +1,6 @@
 {
 	"name": "macctl",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"description": "macOS CLI for controlling system settings (volume, screen, etc.) via AppleScript",
 	"module": "src/index.ts",
 	"type": "module",
